@@ -1,0 +1,739 @@
+package IA;
+
+
+import java.awt.Dimension;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
+import static IA.commonClass.equipmentColumn;
+import static IA.commonClass.equipmentHiddenColumn;
+import java.sql.PreparedStatement;
+import javax.swing.JOptionPane;
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+/**
+ *
+ * @author shufa
+ */
+public class teacherInventory extends javax.swing.JFrame {
+    
+int numberOfRows =0;
+int columnlength;
+public void addRowsInTable(){
+    try{
+    Connection myCon = DriverManager.getConnection("jdbc:mysql://localhost:3306/borrowrecord","myuser","1222");
+    Statement myStmt = myCon.createStatement();
+    ResultSet myRs6 = myStmt.executeQuery("select count(*) from equipmentmaster;");
+    while(myRs6.next()){
+        numberOfRows = Integer.parseInt (myRs6.getString("count(*)"));
+        break;
+        }
+        columnlength = equipmentColumn.length;
+        String data[][] = new String[numberOfRows][columnlength];
+    ResultSet myRs5 = myStmt.executeQuery("select * from equipmentmaster;");
+    for (int x=0; myRs5.next();x++){
+        for (int y =0; y < columnlength ; y++){
+            data[x][y] = myRs5.getString(equipmentColumn[y]); 
+        }
+    }
+    int intEquipmentStatus;
+    for (int y= 0; y< columnlength; y++){
+        if ("equipmentStatus".equals(equipmentColumn[y])){           
+            for (int x=0; x < numberOfRows ; x++){
+                intEquipmentStatus = Integer.parseInt(data[x][y]);
+                if (intEquipmentStatus==0){
+                    data[x][y] = "damaged";
+                }
+                if (intEquipmentStatus==1){
+                    data[x][y] = "to be checked";
+                }
+                if (intEquipmentStatus==2){
+                    data[x][y] = "not opened to borrow";
+                }
+                if (intEquipmentStatus==3){
+                    data[x][y] = "open to borrow";
+                }
+            }
+        }
+        if ("currentStatus".equals(equipmentColumn[y])){
+            for (int x=0;  x < numberOfRows  ; x++){
+                if (Integer.parseInt(data[x][y])==0){
+                    data[x][y] = "free to borrow";
+                }
+                else{data[x][y] = "borrowed";}
+            }
+        }
+        if ("maxAllowDuration".equals(equipmentColumn[y])){
+            for (int x=0; x < numberOfRows ; x++){
+                data[x][y] = data[x][y] + " days";
+            }
+        }
+        if ("extensionTime".equals(equipmentColumn[y])){
+            for (int x=0; x < numberOfRows ; x++){
+                data[x][y] = data[x][y] + " days";
+            }
+        }
+        if ("timesofExtension".equals(equipmentColumn[y])){
+            for (int x=0; x < numberOfRows ; x++){
+                data[x][y] = data[x][y] + " times";
+            }
+        }
+    }
+    //Then the Table is constructed using these data and columnNames:
+    DefaultTableModel model;
+        model = (DefaultTableModel)jTable1.getModel();
+        for (int count = 0; count < columnlength; count++){
+            model.addColumn(equipmentColumn[count]);
+        }
+      for(int n=0;n<numberOfRows;n++){
+          model.addRow(new Object[]{data[n][0]});
+          for(int count = 1; count < columnlength; count++){
+            model.setValueAt(data[n][count], n, count);
+          }
+      }
+       JTable table = new JTable(model);  
+        table.setPreferredScrollableViewportSize(new Dimension(450,63));
+        table.setFillsViewportHeight(true);
+        
+        JScrollPane js=new JScrollPane(table);
+        js.setVisible(true);
+        add(js);
+        }
+    catch(Exception exc){
+   exc.printStackTrace();
+    }
+}
+public void comboBox1and2(String[] equipmentHiddenColumn, String[] equipmentColumn){
+    int hiddencolumnlength  = equipmentHiddenColumn.length;
+    int columnlength  = equipmentColumn.length;
+    jComboBox1.insertItemAt("", 0);
+    for (int count = 0; count < hiddencolumnlength; count++){
+        jComboBox1.addItem(equipmentHiddenColumn[count]);       
+    }
+    jComboBox2.insertItemAt("", 0);
+    for (int count = 1; count < columnlength; count++){ //the reason of being 1 is to let it ignore the equipmentId
+        jComboBox2.addItem(equipmentColumn[count]);       
+    }
+}
+
+public teacherInventory() {
+        initComponents();
+        addRowsInTable();
+        jTable1.setAutoCreateRowSorter(true);
+        comboBox1and2(equipmentHiddenColumn, equipmentColumn);
+    }
+
+    /**
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
+     */
+    @SuppressWarnings("unchecked")
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    private void initComponents() {
+
+        jFrame1 = new javax.swing.JFrame();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        jTable2 = new javax.swing.JTable();
+        jButtonBorrow = new javax.swing.JButton();
+        jTextFieldUserId = new javax.swing.JTextField();
+        jLabel9 = new javax.swing.JLabel();
+        jLabel10 = new javax.swing.JLabel();
+        jPasswordField = new javax.swing.JPasswordField();
+        jButtonBack = new javax.swing.JButton();
+        jLabel11 = new javax.swing.JLabel();
+        jTextFieldBorrowId = new javax.swing.JTextField();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel12 = new javax.swing.JLabel();
+        jTextFieldEequipmentId = new javax.swing.JTextField();
+        jButtonChange = new javax.swing.JButton();
+        jLabel13 = new javax.swing.JLabel();
+        jTextFieldBorrowIdChangeStatesColumnName = new javax.swing.JTextField();
+        jLabel14 = new javax.swing.JLabel();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        jTable1 = new javax.swing.JTable();
+        jComboBox1 = new javax.swing.JComboBox<>();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        jComboBox2 = new javax.swing.JComboBox<>();
+        jTextFieldBorrowIdChangeTo = new javax.swing.JTextField();
+        jLabel4 = new javax.swing.JLabel();
+        jLabel5 = new javax.swing.JLabel();
+        jLabel15 = new javax.swing.JLabel();
+        jTextFieldDeleteBox = new javax.swing.JTextField();
+        jButtonChange1 = new javax.swing.JButton();
+        jButton2 = new javax.swing.JButton();
+        jLabel6 = new javax.swing.JLabel();
+
+        jFrame1.setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+
+        jTable2.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Equipment ID", "Category", "Name", "Status", "IT Room", "Specific Location"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+        });
+        jScrollPane2.setViewportView(jTable2);
+
+        jButtonBorrow.setText("Borrow");
+        jButtonBorrow.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonBorrowActionPerformed(evt);
+            }
+        });
+
+        jTextFieldUserId.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextFieldUserIdActionPerformed(evt);
+            }
+        });
+
+        jLabel9.setText("User ID:");
+
+        jLabel10.setText("Password:");
+
+        jPasswordField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jPasswordFieldActionPerformed(evt);
+            }
+        });
+
+        jButtonBack.setText("Main Page");
+        jButtonBack.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonBackActionPerformed(evt);
+            }
+        });
+
+        jLabel11.setText("Borrow ID:");
+
+        jTextFieldBorrowId.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextFieldBorrowIdActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jFrame1Layout = new javax.swing.GroupLayout(jFrame1.getContentPane());
+        jFrame1.getContentPane().setLayout(jFrame1Layout);
+        jFrame1Layout.setHorizontalGroup(
+            jFrame1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jFrame1Layout.createSequentialGroup()
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 859, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jFrame1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jFrame1Layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(jFrame1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jFrame1Layout.createSequentialGroup()
+                                .addGroup(jFrame1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(jFrame1Layout.createSequentialGroup()
+                                        .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(jTextFieldUserId, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(jFrame1Layout.createSequentialGroup()
+                                        .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(jPasswordField, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addContainerGap())
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jFrame1Layout.createSequentialGroup()
+                                .addGroup(jFrame1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                    .addComponent(jButtonBorrow, javax.swing.GroupLayout.PREFERRED_SIZE, 182, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jButtonBack, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addGap(97, 97, 97))
+                            .addGroup(jFrame1Layout.createSequentialGroup()
+                                .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jTextFieldBorrowId, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addContainerGap())))
+                    .addGroup(jFrame1Layout.createSequentialGroup()
+                        .addGap(170, 170, 170)
+                        .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, 220, Short.MAX_VALUE)
+                        .addContainerGap())))
+        );
+        jFrame1Layout.setVerticalGroup(
+            jFrame1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jFrame1Layout.createSequentialGroup()
+                .addContainerGap(41, Short.MAX_VALUE)
+                .addGroup(jFrame1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jTextFieldBorrowId, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jFrame1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jTextFieldUserId, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jFrame1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jPasswordField, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 14, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButtonBorrow, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(191, 191, 191)
+                .addComponent(jButtonBack, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(97, 97, 97))
+            .addGroup(jFrame1Layout.createSequentialGroup()
+                .addComponent(jScrollPane2)
+                .addContainerGap())
+        );
+
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+
+        jLabel12.setText("Change States Column Name");
+
+        jTextFieldEequipmentId.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextFieldEequipmentIdActionPerformed(evt);
+            }
+        });
+
+        jButtonChange.setText("Change");
+        jButtonChange.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonChangeActionPerformed(evt);
+            }
+        });
+
+        jLabel13.setText("EquipmentID");
+
+        jTextFieldBorrowIdChangeStatesColumnName.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextFieldBorrowIdChangeStatesColumnNameActionPerformed(evt);
+            }
+        });
+
+        jLabel14.setText("Change To ");
+
+        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+
+            }
+        ));
+        jScrollPane3.setViewportView(jTable1);
+
+        jComboBox1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jComboBox1ActionPerformed(evt);
+            }
+        });
+
+        jLabel1.setFont(new java.awt.Font("Tahoma", 1, 16)); // NOI18N
+        jLabel1.setText("Add Column");
+
+        jLabel3.setFont(new java.awt.Font("Tahoma", 1, 16)); // NOI18N
+        jLabel3.setText("Delete Column");
+
+        jComboBox2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jComboBox2ActionPerformed(evt);
+            }
+        });
+
+        jTextFieldBorrowIdChangeTo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextFieldBorrowIdChangeToActionPerformed(evt);
+            }
+        });
+
+        jLabel4.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        jLabel4.setText("Change Value");
+
+        jLabel5.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        jLabel5.setText("Delete Value");
+
+        jLabel15.setText("EquipmentID");
+
+        jTextFieldDeleteBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextFieldDeleteBoxActionPerformed(evt);
+            }
+        });
+
+        jButtonChange1.setText("Delete");
+        jButtonChange1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonChange1ActionPerformed(evt);
+            }
+        });
+
+        jButton2.setText("Main Page");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
+
+        jLabel6.setFont(new java.awt.Font("Tahoma", 1, 16)); // NOI18N
+        jLabel6.setText("Teacher Inventoy Page");
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 684, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(29, 29, 29)
+                                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGap(18, 18, 18)
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 189, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addGroup(layout.createSequentialGroup()
+                                                .addGap(162, 162, 162)
+                                                .addComponent(jButtonChange1, javax.swing.GroupLayout.PREFERRED_SIZE, 182, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                            .addGroup(layout.createSequentialGroup()
+                                                .addGap(47, 47, 47)
+                                                .addComponent(jLabel15, javax.swing.GroupLayout.PREFERRED_SIZE, 199, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                .addComponent(jTextFieldDeleteBox, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGap(210, 210, 210)
+                                        .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 196, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addGap(159, 159, 159)
+                                .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(203, 203, 203)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(18, 18, 18)
+                                .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel13, javax.swing.GroupLayout.PREFERRED_SIZE, 199, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel12, javax.swing.GroupLayout.PREFERRED_SIZE, 242, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel14, javax.swing.GroupLayout.PREFERRED_SIZE, 239, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jTextFieldEequipmentId, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jTextFieldBorrowIdChangeTo, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jTextFieldBorrowIdChangeStatesColumnName, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(33, 33, 33)
+                                .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 189, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(88, 88, 88)
+                                .addComponent(jButtonChange, javax.swing.GroupLayout.PREFERRED_SIZE, 182, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(9, 9, 9)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 651, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(46, 46, 46)
+                                .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, 37, Short.MAX_VALUE)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(jLabel15, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGap(0, 0, Short.MAX_VALUE)
+                                        .addComponent(jTextFieldDeleteBox, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addGap(9, 9, 9)
+                                .addComponent(jButtonChange1, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, 37, Short.MAX_VALUE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(jTextFieldEequipmentId, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel13, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(jTextFieldBorrowIdChangeStatesColumnName, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel12, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(jLabel14, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jTextFieldBorrowIdChangeTo, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(18, 18, 18)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(jButtonChange, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(69, 69, 69))))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(76, Short.MAX_VALUE))
+        );
+
+        pack();
+    }// </editor-fold>//GEN-END:initComponents
+
+    private void jButtonBorrowActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonBorrowActionPerformed
+
+    }//GEN-LAST:event_jButtonBorrowActionPerformed
+
+    private void jTextFieldUserIdActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldUserIdActionPerformed
+
+    }//GEN-LAST:event_jTextFieldUserIdActionPerformed
+
+    private void jPasswordFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jPasswordFieldActionPerformed
+
+    }//GEN-LAST:event_jPasswordFieldActionPerformed
+
+    private void jButtonBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonBackActionPerformed
+        new firstPage().setVisible(true);
+        dispose();
+    }//GEN-LAST:event_jButtonBackActionPerformed
+
+    private void jTextFieldBorrowIdActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldBorrowIdActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextFieldBorrowIdActionPerformed
+
+    private void jTextFieldEequipmentIdActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldEequipmentIdActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextFieldEequipmentIdActionPerformed
+
+    private void jButtonChangeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonChangeActionPerformed
+        int activateKey = 1;
+        String a = jTextFieldEequipmentId.getText();
+        int a1 = Integer.parseInt(a);
+        String b = jTextFieldBorrowIdChangeStatesColumnName.getText();
+        String c = jTextFieldBorrowIdChangeTo.getText();
+        if ("equipmentStatus".equals(b)){
+            if ("damaged".equals(c)){
+                c = "0";
+            }
+            else if ("to be checked".equals(c)){
+                c = "1";
+            }
+            else if ("not opened to borrow".equals(c)){
+                c = "2";
+            }
+            else if ("open to borrow".equals(c)){
+                c = "3";
+            }
+            else{
+                JOptionPane.showMessageDialog(null,"You typed wrong Change States Column Name");
+                activateKey = 0;
+            }    
+        }
+       try{
+    if (activateKey ==1){       
+    if (!b.equals("currentStatus")){
+    Connection myCon = DriverManager.getConnection("jdbc:mysql://localhost:3306/borrowrecord","myuser","1222");
+    Statement myStmt = myCon.createStatement();
+    ResultSet myRs6 = myStmt.executeQuery("select equipmentId from equipmentmaster;");
+    String[] equipmentId = new String [numberOfRows];
+           for (int x =0; myRs6.next(); x++){
+                equipmentId[x] = myRs6.getString("equipmentId");
+            }
+            for (int x=0; x < numberOfRows; x++){
+                if (a.equals(equipmentId[x])){
+                    for (int y= 0; y < equipmentColumn.length; y++){
+                        if(b.equals(equipmentColumn[y])){
+                            
+                            PreparedStatement updateValue = myCon.prepareStatement("Update equipmentmaster "
+                                    + "set "+ equipmentColumn[y] + " = ? where equipmentId = ? ;");
+                            updateValue.setString(1, c);
+                            updateValue.setInt(2, a1);
+                            updateValue.executeUpdate();
+                            JOptionPane.showMessageDialog(null,"Updated Successfully");
+                            new teacherInventory().setVisible(true);
+                            dispose();
+                        }
+                    }
+                }
+            }
+       }
+    else {
+        JOptionPane.showMessageDialog(null,"This category can't be edited");
+    }
+       }
+       }
+       catch(Exception exc){
+            exc.printStackTrace();
+        }
+       
+    }//GEN-LAST:event_jButtonChangeActionPerformed
+
+    private void jTextFieldBorrowIdChangeStatesColumnNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldBorrowIdChangeStatesColumnNameActionPerformed
+        
+    }//GEN-LAST:event_jTextFieldBorrowIdChangeStatesColumnNameActionPerformed
+
+    private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed
+        String selectedValue = jComboBox1.getSelectedItem().toString();
+        if (selectedValue != ""){
+        equipmentColumn = java.util.Arrays.copyOf(equipmentColumn, equipmentColumn.length+1);
+        equipmentColumn[equipmentColumn.length-1] = selectedValue;
+        
+        for (int count=0; count < equipmentHiddenColumn.length; count++){
+            if (equipmentHiddenColumn[count] == selectedValue){
+                for(int x = count; x < equipmentHiddenColumn.length-1 ; x++){
+                    equipmentHiddenColumn[x]=equipmentHiddenColumn[x+1];
+                }
+                break;
+            }
+        }
+        equipmentHiddenColumn = java.util.Arrays.copyOf(equipmentHiddenColumn, equipmentHiddenColumn.length-1);
+        new teacherInventory().setVisible(true);
+        dispose();
+        }
+    }//GEN-LAST:event_jComboBox1ActionPerformed
+
+    private void jComboBox2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox2ActionPerformed
+        String selectedValue = jComboBox2.getSelectedItem().toString();
+        if (selectedValue != ""){
+        equipmentHiddenColumn = java.util.Arrays.copyOf(equipmentHiddenColumn, equipmentHiddenColumn.length+1);
+        equipmentHiddenColumn[equipmentHiddenColumn.length-1] = selectedValue;
+        
+        for (int count=0; count < equipmentColumn.length; count++){
+            if (equipmentColumn[count] == selectedValue){
+                for(int x = count; x < equipmentColumn.length-1 ; x++){
+                    equipmentColumn[x]=equipmentColumn[x+1];
+                }
+                break;
+            }
+        }
+        equipmentColumn = java.util.Arrays.copyOf(equipmentColumn, equipmentColumn.length-1);
+        new teacherInventory().setVisible(true);
+        dispose();
+        }
+    }//GEN-LAST:event_jComboBox2ActionPerformed
+
+    private void jTextFieldBorrowIdChangeToActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldBorrowIdChangeToActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextFieldBorrowIdChangeToActionPerformed
+
+    private void jTextFieldDeleteBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldDeleteBoxActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextFieldDeleteBoxActionPerformed
+
+    private void jButtonChange1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonChange1ActionPerformed
+        try{
+    Connection myCon = DriverManager.getConnection("jdbc:mysql://localhost:3306/borrowrecord","myuser","1222");
+    Statement myStmt = myCon.createStatement();
+        String deleteEquipemntId = jTextFieldDeleteBox.getText();
+        PreparedStatement updateValue = myCon.prepareStatement("Delete from equipmentmaster where equipmentId = ? ;");
+        updateValue.setString(1, deleteEquipemntId);
+        updateValue.executeUpdate();
+        JOptionPane.showMessageDialog(null,"Delete Successful");
+        new teacherInventory().setVisible(true);
+        dispose();
+          }
+    catch(Exception exc){
+   exc.printStackTrace();
+   JOptionPane.showMessageDialog(null,"Delete Unsuccessful");
+    }
+    }//GEN-LAST:event_jButtonChange1ActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        new teacherFirstPage().setVisible(true);
+        dispose();       
+    }//GEN-LAST:event_jButton2ActionPerformed
+
+    /**
+     * @param args the command line arguments
+     */
+    public static void main(String args[]) {
+        /* Set the Nimbus look and feel */
+        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+         */
+        try {
+            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (ClassNotFoundException ex) {
+            java.util.logging.Logger.getLogger(teacherInventory.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (InstantiationException ex) {
+            java.util.logging.Logger.getLogger(teacherInventory.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            java.util.logging.Logger.getLogger(teacherInventory.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+            java.util.logging.Logger.getLogger(teacherInventory.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
+        //</editor-fold>
+        //</editor-fold>
+
+        /* Create and display the form */
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                new teacherInventory().setVisible(true);
+            }
+        });
+    }
+
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButtonBack;
+    private javax.swing.JButton jButtonBorrow;
+    private javax.swing.JButton jButtonChange;
+    private javax.swing.JButton jButtonChange1;
+    private javax.swing.JComboBox<String> jComboBox1;
+    private javax.swing.JComboBox<String> jComboBox2;
+    private javax.swing.JFrame jFrame1;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel10;
+    private javax.swing.JLabel jLabel11;
+    private javax.swing.JLabel jLabel12;
+    private javax.swing.JLabel jLabel13;
+    private javax.swing.JLabel jLabel14;
+    private javax.swing.JLabel jLabel15;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel9;
+    private javax.swing.JPasswordField jPasswordField;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JTable jTable1;
+    private javax.swing.JTable jTable2;
+    private javax.swing.JTextField jTextFieldBorrowId;
+    private javax.swing.JTextField jTextFieldBorrowIdChangeStatesColumnName;
+    private javax.swing.JTextField jTextFieldBorrowIdChangeTo;
+    private javax.swing.JTextField jTextFieldDeleteBox;
+    private javax.swing.JTextField jTextFieldEequipmentId;
+    private javax.swing.JTextField jTextFieldUserId;
+    // End of variables declaration//GEN-END:variables
+}
