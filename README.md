@@ -1,2 +1,4 @@
-## Video Showcase:
-file:///C:/Users/Nicholas/OneDrive/MyDocs/Projects/Completed%20Projects/IB%20CS%20IA/Documentation/Crit_D_Video.mp4
+## Video Showcase: 
+
+https://github.com/sfnicholas/IT-Room-Borrowing-System/assets/75962325/a8d16233-a3f2-4b36-8ce5-b42004605bb8
+
